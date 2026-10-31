@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-# Install LibreOffice and common fonts so Word/PPT PDF conversions look accurate
 RUN apt-get update && apt-get install -y \
     libreoffice \
     fonts-liberation \
@@ -14,6 +13,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY main.py .
+COPY index.html .
 
 EXPOSE 8000
 
