@@ -3,60 +3,326 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document Converter & Merger</title>
+    <title>All-in-One Document Converter & Merger</title>
     <style>
         * { box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fb;
+            color: #1e293b;
             margin: 0;
             padding: 20px;
         }
-        header {
+        .header {
             text-align: center;
-            margin-bottom: 20px;
+            max-width: 700px;
+            margin: 20px auto 40px;
         }
-        /* Loading Overlay Styling */
-        #loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
+        .header h1 {
+            color: #0f172a;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #64748b;
+            font-size: 1.05rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            display: flex;
             flex-direction: column;
-            color: white;
-            font-family: Arial, sans-serif;
+            justify-content: space-between;
+            border: 1px solid #e2e8f0;
         }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #007bff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            color: #1e293b;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .card p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        .drop-zone {
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            padding: 28px 16px;
+            text-align: center;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+        .drop-zone.drag-over {
+            background-color: #eff6ff;
+            border-color: #1d4ed8;
+        }
+        .file-list {
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 12px;
+            text-align: left;
+            max-height: 90px;
+            overflow-y: auto;
+        }
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.9rem;
+        }
+        button {
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        button:hover:not(:disabled) {
+            background-color: #1d4ed8;
+        }
+        button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            min-height: 18px;
         }
     </style>
 </head>
 <body>
-    <!-- Loading Spinner Overlay -->
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <h3>Processing your files... Please wait</h3>
-    </div>
 
     <div class="header">
         <h1>Document Converter & Merger</h1>
         <p>Convert Word & PowerPoint to PDF, or merge Word, Excel, and PDF files online for free.</p>
     </div>
+
+    <div class="grid">
+        <!-- Tool 1: Word to PDF -->
+        <div class="card">
+            <div>
+                <h2>1. Word to PDF</h2>
+                <p>Convert a .doc or .docx file into a PDF document.</p>
+                <div class="drop-zone" id="drop-word">Drag & drop a Word file here or click to browse</div>
+                <input type="file" id="input-word" accept=".doc,.docx" hidden>
+                <div class="file-list" id="list-word"></div>
+            </div>
+            <div>
+                <button id="btn-word" disabled>Convert to PDF</button>
+                <div class="status" id="status-word"></div>
+            </div>
+        </div>
+
+        <!-- Tool 2: PowerPoint to PDF -->
+        <div class="card">
+            <div>
+                <h2>2. PowerPoint to PDF</h2>
+                <p>Convert a .ppt or .pptx presentation into a PDF.</p>
+                <div class="drop-zone" id="drop-ppt">Drag & drop a PPT file here or click to browse</div>
+                <input type="file" id="input-ppt" accept=".ppt,.pptx" hidden>
+                <div class="file-list" id="list-ppt"></div>
+            </div>
+            <div>
+                <button id="btn-ppt" disabled>Convert to PDF</button>
+                <div class="status" id="status-ppt"></div>
+            </div>
+        </div>
+
+        <!-- Tool 3: Merge Word & PDF -->
+        <div class="card">
+            <div>
+                <h2>3. Merge Word & PDF</h2>
+                <p>Select 2 or more Word (.docx) and PDF (.pdf) files to combine into one PDF.</p>
+                <div class="drop-zone" id="drop-wp">Drag & drop Word and PDF files here</div>
+                <input type="file" id="input-wp" accept=".doc,.docx,.pdf" multiple hidden>
+                <div class="file-list" id="list-wp"></div>
+            </div>
+            <div>
+                <button id="btn-wp" disabled>Merge into PDF</button>
+                <div class="status" id="status-wp"></div>
+            </div>
+        </div>
+
+        <!-- Tool 4: Merge Word to Word -->
+        <div class="card">
+            <div>
+                <h2>4. Merge Word Files</h2>
+                <p>Combine multiple .docx documents into a single Word file.</p>
+                <div class="drop-zone" id="drop-mw">Drag & drop 2+ Word (.docx) files here</div>
+                <input type="file" id="input-mw" accept=".docx" multiple hidden>
+                <div class="file-list" id="list-mw"></div>
+            </div>
+            <div>
+                <button id="btn-mw" disabled>Merge Word Files</button>
+                <div class="status" id="status-mw"></div>
+            </div>
+        </div>
+
+        <!-- Tool 5: Merge Excel Files -->
+        <div class="card">
+            <div>
+                <h2>5. Merge Excel Files</h2>
+                <p>Combine multiple .xlsx or .xls spreadsheets into one master Excel file.</p>
+                <div class="drop-zone" id="drop-excel">Drag & drop 2+ Excel files here</div>
+                <input type="file" id="input-excel" accept=".xlsx,.xls" multiple hidden>
+                <select id="excel-mode">
+                    <option value="rows">Stack all rows into 1 master sheet</option>
+                    <option value="sheets">Keep each file as a separate sheet tab</option>
+                </select>
+                <div class="file-list" id="list-excel"></div>
+            </div>
+            <div>
+                <button id="btn-excel" disabled>Merge Excel Files</button>
+                <div class="status" id="status-excel"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setupTool({ dropId, inputId, listId, btnId, statusId, endpoint, multiple, defaultName, modeSelectId }) {
+            const dropZone = document.getElementById(dropId);
+            const input = document.getElementById(inputId);
+            const fileList = document.getElementById(listId);
+            const button = document.getElementById(btnId);
+            const status = document.getElementById(statusId);
+            let selectedFiles = [];
+
+            function updateUI() {
+                if (selectedFiles.length === 0) {
+                    fileList.innerHTML = "";
+                    button.disabled = true;
+                    return;
+                }
+                fileList.innerHTML = selectedFiles.map((f, i) => `${i + 1}. ${f.name}`).join("<br>");
+                button.disabled = multiple ? selectedFiles.length < 2 : false;
+                if (multiple && selectedFiles.length < 2) {
+                    status.style.color = "#d97706";
+                    status.textContent = "Please select at least 2 files.";
+                } else {
+                    status.textContent = "";
+                }
+            }
+
+            dropZone.addEventListener("click", () => input.click());
+            dropZone.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                dropZone.classList.add("drag-over");
+            });
+            dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+            dropZone.addEventListener("drop", (e) => {
+                e.preventDefault();
+                dropZone.classList.remove("drag-over");
+                if (e.dataTransfer.files.length > 0) {
+                    selectedFiles = multiple ? Array.from(e.dataTransfer.files) : [e.dataTransfer.files[0]];
+                    updateUI();
+                }
+            });
+
+            input.addEventListener("change", (e) => {
+                if (e.target.files.length > 0) {
+                    selectedFiles = multiple ? Array.from(e.target.files) : [e.target.files[0]];
+                    updateUI();
+                }
+            });
+
+            button.addEventListener("click", async () => {
+                button.disabled = true;
+                status.style.color = "#2563eb";
+                status.textContent = "Processing... Please wait.";
+
+                const formData = new FormData();
+                if (multiple) {
+                    selectedFiles.forEach(file => formData.append("files", file));
+                } else {
+                    formData.append("file", selectedFiles[0]);
+                }
+
+                let url = endpoint;
+                if (modeSelectId) {
+                    const mode = document.getElementById(modeSelectId).value;
+                    url += `?mode=${mode}`;
+                }
+
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const downloadUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = downloadUrl;
+                        a.download = defaultName || (selectedFiles[0].name.replace(/\.[^/.]+$/, "") + ".pdf");
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        status.style.color = "#16a34a";
+                        status.textContent = "Success! Your download has started.";
+                    } else {
+                        const err = await response.json().catch(() => ({}));
+                        status.style.color = "#dc2626";
+                        status.textContent = err.detail || "Conversion failed. Check file format.";
+                    }
+                } catch (error) {
+                    status.style.color = "#dc2626";
+                    status.textContent = "Error connecting to server.";
+                } finally {
+                    button.disabled = false;
+                }
+            });
+        }
+
+        setupTool({
+            dropId: "drop-word", inputId: "input-word", listId: "list-word",
+            btnId: "btn-word", statusId: "status-word", endpoint: "/api/word-to-pdf",
+            multiple: false
+        });
+        setupTool({
+            dropId: "drop-ppt", inputId: "input-ppt", listId: "list-ppt",
+            btnId: "btn-ppt", statusId: "status-ppt", endpoint: "/api/ppt-to-pdf",
+            multiple: false
+        });
+        setupTool({
+            dropId: "drop-wp", inputId: "input-wp", listId: "list-wp",
+            btnId: "btn-wp", statusId: "status-wp", endpoint: "/api/merge-word-and-pdf",
+            multiple: true, defaultName: "merged_document.pdf"
+        });
+        setupTool({
+            dropId: "drop-mw", inputId: "input-mw", listId: "list-mw",
+            btnId: "btn-mw", statusId: "status-mw", endpoint: "/api/merge-word",
+            multiple: true, defaultName: "merged_word.docx"
+        });
+        setupTool({
+            dropId: "drop-excel", inputId: "input-excel", listId: "list-excel",
+            btnId: "btn-excel", statusId: "status-excel", endpoint: "/api/merge-excel",
+            multiple: true, defaultName: "merged_excel.xlsx", modeSelectId: "excel-mode"
+        });
+    </script>
 </body>
 </html>
