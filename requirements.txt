@@ -6,3 +6,4 @@ python-docx
 docxcompose
 openpyxl
 pandas
+pdf2docx
