@@ -17,7 +17,8 @@ from pdf2docx import Converter
 app = FastAPI(
     title="Document Converter & Merger API",
     description="Backend API for PDF/PPTX/DOCX/XLSX conversion and Word, Excel, and PDF merging.",
-    version="1.0.0"
+    version="1.0.0",
+    openapi_version="3.0.2"
 )
 
 TEMP_BASE_DIR = "/tmp/doc_processing"
@@ -117,7 +118,7 @@ async def convert_to_pdf(
 @app.post("/merge-pdfs")
 async def merge_pdfs(
     background_tasks: BackgroundTasks,
-    files: List[UploadFile] = File(...)
+    files: List[UploadFile] = File(..., description="Select multiple PDF files to merge")
 ):
     if len(files) < 2:
         raise HTTPException(status_code=400, detail="Please upload at least 2 PDF files to merge.")
