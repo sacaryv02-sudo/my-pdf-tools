@@ -18,7 +18,6 @@ app = FastAPI(
     title="Document Converter & Merger API",
     description="Backend API for PDF/PPTX/DOCX/XLSX conversion and Word, Excel, and PDF merging.",
     version="1.0.0",
-    openapi_version="3.0.2"
 )
 
 TEMP_BASE_DIR = "/tmp/doc_processing"
